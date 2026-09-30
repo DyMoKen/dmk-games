@@ -3,7 +3,14 @@
   padding: 0; border: 0; color: var(--ink); background: var(--bg);
   width: min(1180px, 94vw); max-width: none; max-height: 92vh; border-radius: var(--radius-lg);
   box-shadow: 0 30px 80px rgb(var(--shade) / .45);
+  margin: auto; scrollbar-width: none;
 }
+#project-dialog[open] { animation: pd-pop .42s cubic-bezier(.3, .2, .3, 1); }
+#project-dialog[open]::backdrop { animation: pd-fade .3s ease-out; }
+@keyframes pd-pop { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
+@keyframes pd-fade { from { opacity: 0; } to { opacity: 1; } }
+#project-dialog::-webkit-scrollbar, .pd-shell::-webkit-scrollbar, .pd-media::-webkit-scrollbar, .pd-info::-webkit-scrollbar { display: none; }
+.pd-shell, .pd-media, .pd-info { scrollbar-width: none; }
 #project-dialog::backdrop { background: rgb(var(--shade) / .72); }
 .pd-shell { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); max-height: 92vh; }
 .pd-close { position: absolute; top: 12px; right: 12px; z-index: 3; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); }
