@@ -96,6 +96,7 @@
     }
     function goTo(x) { strip.scrollTo({ left: x, behavior: reduce ? 'auto' : 'smooth' }); }
     function step(dir) {
+      halt();
       var list = cards(), cur = strip.scrollLeft, i;
       if (dir > 0) {
         for (i = 0; i < list.length; i++) if (list[i].offsetLeft - anchor > cur + 4) break;
@@ -106,7 +107,7 @@
       }
     }
     // After any scroll settles, silently jump by one period so the strip never runs out of copies.
-    strip.addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(recentre, 140); }, { passive: true });
+    strip.addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(function () { if (!raf) recentre(); }, 140); }, { passive: true });
     window.addEventListener('resize', function () { measure(); strip.scrollLeft = home(); });
     measure(); strip.scrollLeft = home();
     function restart() {
@@ -121,16 +122,54 @@
     box.addEventListener('mouseleave', function () { hovering = false; restart(); });
     strip.addEventListener('touchstart', restart, { passive: true });
     strip.addEventListener('keydown', restart);
-    // Shift + wheel already scrolls sideways natively; Ctrl + wheel is mapped to it here.
-    var wheelLock = 0;
+    /* Momentum wheel: every wheel tick adds speed, the strip coasts past cards and slows down by friction.
+       Only once it has (almost) stopped does it snap, quickly, to the nearest card. */
+    var TAU = 420, GAIN = 0.01, VMAX = 7, V_STOP = 0.04, SNAP_MS = 200; // ms, px/ms per wheel px, px/ms, px/ms, ms
+    var vel = 0, pos = 0, raf = 0, last = 0, snap = null;
+
+    function wrap() {
+      var h = home();
+      while (pos > h + period / 2) { pos -= period; if (snap) snap.from -= period, snap.to -= period; }
+      while (pos < h - period / 2) { pos += period; if (snap) snap.from += period, snap.to += period; }
+    }
+    function nearest(x) {
+      var list = cards(), best = 0, bd = Infinity;
+      list.forEach(function (c, i) { var d = Math.abs(c.offsetLeft - anchor - x); if (d < bd) { bd = d; best = i; } });
+      return list[best].offsetLeft - anchor;
+    }
+    function halt() { cancelAnimationFrame(raf); raf = 0; vel = 0; snap = null; }
+    function frame(now) {
+      var dt = Math.min(now - last, 32); last = now;
+      if (snap) {
+        snap.t += dt;
+        var k = Math.min(snap.t / SNAP_MS, 1), e = 1 - Math.pow(1 - k, 3);
+        pos = snap.from + (snap.to - snap.from) * e;
+        wrap(); strip.scrollLeft = pos;
+        if (k >= 1) { raf = 0; snap = null; return; }
+      } else {
+        pos += vel * dt;
+        vel *= Math.exp(-dt / TAU);
+        wrap(); strip.scrollLeft = pos;
+        if (Math.abs(vel) < V_STOP) { vel = 0; snap = { from: pos, to: nearest(pos), t: 0 }; }
+      }
+      raf = requestAnimationFrame(frame);
+    }
+    function kick(delta) {
+      if (!raf) { strip.scrollTo({ left: strip.scrollLeft, behavior: 'auto' }); pos = strip.scrollLeft; last = performance.now(); raf = requestAnimationFrame(frame); }
+      snap = null;
+      vel = Math.max(-VMAX, Math.min(VMAX, vel + delta * GAIN));
+    }
     strip.addEventListener('wheel', function (e) {
-      if (!e.ctrlKey) return;
+      var horiz = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (reduce || !(e.shiftKey || e.ctrlKey || horiz)) return; // plain vertical wheel keeps scrolling the page
       e.preventDefault();
-      var d = e.deltaY || e.deltaX, now = Date.now();
-      if (!d || now - wheelLock < 450) return;
-      wheelLock = now;
-      step(d > 0 ? 1 : -1); restart();
+      var d = horiz || (e.shiftKey && e.deltaX && !e.deltaY) ? e.deltaX : e.deltaY;
+      if (e.deltaMode === 1) d *= 16; else if (e.deltaMode === 2) d *= 300;
+      kick(d); restart();
     }, { passive: false });
+    // Buttons, autoplay, touch and keyboard take over from any running momentum.
+    ['pointerdown', 'touchstart', 'keydown'].forEach(function (t) { strip.addEventListener(t, halt, { passive: true }); });
+    [$('.car-prev', box), $('.car-next', box)].forEach(function (b) { b.addEventListener('click', halt); });
     restart();
   }
 
