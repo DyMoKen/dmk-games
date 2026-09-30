@@ -1,0 +1,47 @@
+/* ---------- Project dialog ---------- */
+#project-dialog {
+  padding: 0; border: 0; color: var(--ink); background: var(--bg);
+  width: min(1180px, 94vw); max-width: none; max-height: 92vh; border-radius: var(--radius-lg);
+  box-shadow: 0 30px 80px rgb(var(--shade) / .45);
+}
+#project-dialog::backdrop { background: rgb(var(--shade) / .72); }
+.pd-shell { position: relative; display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); max-height: 92vh; }
+.pd-close { position: absolute; top: 12px; right: 12px; z-index: 3; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; border: 1px solid var(--line); background: var(--bg); }
+.pd-close:hover { border-color: var(--muted); }
+
+.pd-media { padding: 20px; display: grid; align-content: start; gap: 14px; background: var(--surface); border-radius: var(--radius-lg) 0 0 var(--radius-lg); overflow-y: auto; }
+.pd-stage { display: grid; place-items: center; background: #000; border-radius: var(--radius); overflow: hidden; margin-inline: auto; }
+.pd-stage[data-orient="wide"] { width: 100%; aspect-ratio: var(--ar); }
+.pd-stage[data-orient="tall"] { height: min(68vh, 640px); aspect-ratio: var(--ar); max-width: 100%; }
+.pd-stage img, .pd-stage video { width: 100%; height: 100%; object-fit: contain; }
+
+.pd-thumbs { display: flex; flex-wrap: wrap; gap: 8px; }
+.pd-thumb { position: relative; height: 58px; padding: 0; border: 2px solid transparent; border-radius: 8px; overflow: hidden; background: var(--bg); opacity: .72; }
+.pd-thumb:hover { opacity: 1; }
+.pd-thumb[aria-current="true"] { border-color: var(--accent); opacity: 1; }
+.pd-thumb img { height: 100%; width: auto; }
+.pd-thumb.is-video::after { content: ""; position: absolute; left: 50%; top: 50%; translate: -35% -50%; border-style: solid; border-width: 8px 0 8px 13px; border-color: transparent transparent transparent #fff; filter: drop-shadow(0 0 3px rgb(0 0 0 / .7)); }
+
+.pd-info { padding: clamp(20px, 3vw, 36px); overflow-y: auto; display: grid; align-content: start; gap: 18px; }
+.pd-title { font-size: clamp(1.5rem, 2.6vw, 2.1rem); padding-right: 44px; }
+.pd-meta { display: grid; grid-template-columns: max-content 1fr; gap: 6px 18px; font-size: .95rem; }
+.pd-meta dt { color: var(--muted); }
+.pd-summary { max-width: 60ch; }
+.pd-info h3 { font-size: .95rem; margin-bottom: 8px; font-family: var(--font-body); font-weight: 600; letter-spacing: 0; }
+.pd-list { display: grid; gap: 8px; }
+.pd-list li { position: relative; padding-left: 1.1em; color: var(--muted); }
+.pd-list li::before { content: ""; position: absolute; left: 0; top: .72em; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+.pd-stack { color: var(--muted); }
+.pd-links a { font-weight: 500; }
+.pd-nav { display: flex; justify-content: space-between; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+.pd-nav button { border: 0; background: none; padding: 6px 0; color: var(--muted); text-decoration: underline; text-underline-offset: .2em; }
+.pd-nav button:hover { color: var(--ink); }
+
+@media (max-width: 899px) {
+  #project-dialog { width: 100vw; height: 100dvh; max-height: none; border-radius: 0; }
+  .pd-shell { display: block; max-height: none; height: 100%; overflow-y: auto; }
+  .pd-media { border-radius: 0; overflow: visible; padding: 14px; }
+  .pd-info { overflow: visible; }
+  .pd-stage[data-orient="tall"] { height: min(62vh, 560px); }
+  .pd-close { position: fixed; }
+}

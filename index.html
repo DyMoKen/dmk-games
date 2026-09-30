@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Diyor Ikromov — Game Developer</title>
+  <meta name="description" content="Game developer with 5+ years in Unity. Mobile, PC and VR games: gameplay, interfaces, multiplayer and tools.">
+  <link rel="canonical" href="https://dmk-games.com/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Diyor Ikromov — Game Developer">
+  <meta property="og:description" content="Unity developer with 5+ years of experience. Mobile, PC and VR games.">
+  <meta property="og:url" content="https://dmk-games.com/">
+  <meta property="og:image" content="https://dmk-games.com/assets/og.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <!-- Apply the saved (or system) theme before first paint to avoid a flash. -->
+  <script>
+    (function () {
+      try {
+        var s = localStorage.getItem('dmk-theme');
+        var t = s || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', t);
+      } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/dialog.css">
+</head>
+<body>
+  <a class="skip" href="#work" data-i18n="skip">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top">dmk-games</a>
+      <nav class="nav" data-i18n-aria="nav.label" aria-label="Sections">
+        <a href="#work" data-i18n="nav.work">Work</a>
+        <a href="#skills" data-i18n="nav.skills">Skills</a>
+        <a href="#experience" data-i18n="nav.experience">Experience</a>
+        <a href="#contact" data-i18n="nav.contact">Contact</a>
+      </nav>
+      <div class="controls">
+        <div class="seg" role="group" data-i18n-aria="lang.label" aria-label="Language">
+          <button type="button" data-lang="en" aria-pressed="true">EN</button>
+          <button type="button" data-lang="ru" aria-pressed="false">RU</button>
+        </div>
+        <button type="button" class="icon-btn" id="theme-toggle" data-i18n-aria="theme.toggle" aria-label="Switch colour theme">
+          <svg class="ico-moon" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+          <svg class="ico-sun" viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="wrap">
+        <h1 data-i18n="hero.title">Diyor Ikromov</h1>
+        <p class="hero-lead" data-i18n="hero.lead">Game developer with 5+ years in Unity. I build mobile, PC and VR games: gameplay, interfaces, multiplayer and the tools around them.</p>
+        <p class="hero-status" data-i18n="hero.status">Available for freelance projects</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#work" data-i18n="hero.cta.work">See the work</a>
+          <a class="btn btn-quiet" href="mailto:ikromovdiyor2001@gmail.com" data-i18n="hero.cta.mail">Email me</a>
+        </div>
+      </div>
+      <div class="strip" aria-label="Frames from my projects">
+        <a href="#project/sehrlandiya" style="--i:0" aria-label="Sehrlandiya"><img src="assets/img/sehrlandiya/3.webp" alt="" width="1280" height="576"></a>
+        <a href="#project/ecogrid" style="--i:1" aria-label="EcoGrid"><img src="assets/img/ecogrid/2.webp" alt="" width="720" height="1592"></a>
+        <a href="#project/driving-simulator" style="--i:2" aria-label="Driving Simulator"><img src="assets/img/driving-simulator/2.webp" alt="" width="1280" height="720"></a>
+        <a href="#project/hole-control" style="--i:3" aria-label="Hole Control"><img src="assets/img/hole-control/1.webp" alt="" width="498" height="1080"></a>
+        <a href="#project/vr-anatomy" style="--i:4" aria-label="VR Anatomy"><img src="assets/img/vr-anatomy/2.webp" alt="" width="1280" height="560"></a>
+        <a href="#project/shoot-em-up" style="--i:5" aria-label="Shoot 'Em Up"><img src="assets/img/shoot-em-up/2.webp" alt="" width="1274" height="678"></a>
+      </div>
+    </section>
+
+    <section id="work" class="section wrap">
+      <div class="section-head">
+        <h2 data-i18n="work.title">Work</h2>
+        <p data-i18n="work.intro">Games and simulators I built or worked on. Open a project for video, screenshots and what I did on it.</p>
+      </div>
+      <div class="mosaic" id="mosaic">
+        <div id="tiles"></div>
+        <aside class="note">
+          <h3 data-i18n="note.title">Also shipped</h3>
+          <p data-i18n="note.body">20 legacy mobile games restored and re-published for Google Play and the Alla WebGL platform, at ITIC Games.</p>
+        </aside>
+      </div>
+      <noscript><p>This page needs JavaScript to list the projects. Write to ikromovdiyor2001@gmail.com to get the portfolio as a PDF.</p></noscript>
+    </section>
+
+    <section id="skills" class="section wrap">
+      <div class="section-head"><h2 data-i18n="skills.title">Skills</h2></div>
+      <dl class="skills-list" id="skills-list"></dl>
+    </section>
+
+    <section id="experience" class="section wrap">
+      <div class="section-head"><h2 data-i18n="experience.title">Experience</h2></div>
+      <div class="jobs" id="jobs"></div>
+      <div class="edu">
+        <h3 data-i18n="edu.title">Education</h3>
+        <p data-i18n="edu.body">College, Software Engineering and Design (Uzbekistan). A year of study in Poland, 2023–2024.</p>
+      </div>
+    </section>
+
+    <section id="contact" class="section wrap">
+      <div class="section-head">
+        <h2 data-i18n="contact.title">Contact</h2>
+        <p data-i18n="contact.lead">Have a project or a role in mind? Write to me. I speak Russian, English and Uzbek.</p>
+      </div>
+      <a class="contact-mail" href="mailto:ikromovdiyor2001@gmail.com">ikromovdiyor2001@gmail.com</a>
+      <ul class="contact-list">
+        <li><span>Telegram</span><a href="https://t.me/Diyor_Ikromov" rel="noopener">@Diyor_Ikromov</a></li>
+        <li><span>LinkedIn</span><a href="https://www.linkedin.com/in/diyorikromov/" rel="noopener">Diyor Ikromov</a></li>
+        <li><span>GitHub</span><a href="https://github.com/DyMoKen" rel="noopener">DyMoKen</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <span>© 2026 Diyor Ikromov</span>
+      <span>dmk-games.com</span>
+    </div>
+  </footer>
+
+  <dialog id="project-dialog" aria-labelledby="pd-title">
+    <div class="pd-shell">
+      <button type="button" class="pd-close" id="pd-close" data-i18n-aria="pd.close" aria-label="Close">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </button>
+      <div id="pd-body" style="display:contents"></div>
+    </div>
+  </dialog>
+
+  <!-- Classic scripts (not modules) so the site also works when index.html is opened from disk. -->
+  <script src="js/data/projects.js"></script>
+  <script src="js/data/experience.js"></script>
+  <script src="js/data/skills.js"></script>
+  <script src="js/i18n.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
