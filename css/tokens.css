@@ -1,19 +1,29 @@
 /* Design tokens. Change colours, fonts and spacing here, nowhere else. */
 :root {
-  --font-display: "Unbounded", "Onest", system-ui, sans-serif;
+  --font-display: "Orbitron", "Onest", system-ui, sans-serif;
   --font-body: "Onest", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
 
-  --bg: #F3F4F8;
+  /* Cyberpunk, daylight variant: pale grid-paper base, magenta + teal neon */
+  --bg: #EDEEF8;
   --surface: #FFFFFF;
-  --ink: #1A1C2C;
-  --muted: #5D6278;
-  --line: #DADDEA;
-  --accent: #5B4BFF;
+  --ink: #0E1030;
+  --muted: #545982;
+  --line: #C9CCE6;
+  --accent: #D1006C;          /* primary neon: magenta */
+  --accent-rgb: 209 0 108;
   --accent-ink: #FFFFFF;
+  --accent-2: #007F99;        /* secondary neon: cyan */
+  --accent-2-rgb: 0 127 153;
+  --accent-3: #B08A00;        /* warning yellow, used sparingly */
+  --grid: rgb(14 16 48 / .05);
+  --scan: 0;                  /* scanline overlay strength */
+  --glow: 0 0 0 rgb(0 0 0 / 0);
   --shade: 8 9 20; /* rgb triplet used for text-over-image gradients */
 
-  --radius: 10px;
-  --radius-lg: 16px;
+  --radius: 3px;
+  --radius-lg: 4px;
+  --cut: 14px;                /* size of chamfered (cut) corners */
   --gutter: clamp(16px, 4vw, 40px);
   --wrap: 1200px;
   --header-h: 60px;
@@ -21,12 +31,20 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #12131C;
-  --surface: #1B1D2B;
-  --ink: #ECEEF7;
-  --muted: #A0A5BE;
-  --line: #2D3045;
-  --accent: #9C93FF;
-  --accent-ink: #12131C;
+  /* Night City: near-black violet base, cyan / magenta / yellow neon */
+  --bg: #07070F;
+  --surface: #0F1022;
+  --ink: #E6EAFF;
+  --muted: #8C92BC;
+  --line: #262A52;
+  --accent: #00F0FF;
+  --accent-rgb: 0 240 255;
+  --accent-ink: #04040C;
+  --accent-2: #FF2BD6;
+  --accent-2-rgb: 255 43 214;
+  --accent-3: #FCEE0A;
+  --grid: rgb(0 240 255 / .045);
+  --scan: .07;
+  --glow: 0 0 18px rgb(0 240 255 / .35);
   color-scheme: dark;
 }
