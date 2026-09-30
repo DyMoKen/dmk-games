@@ -50,6 +50,122 @@
   }
 
   /* ---------- page sections ---------- */
+  function renderStripCaps() {
+    $$('#strip a').forEach(function (a) {
+      var p = findProject(a.getAttribute('href').replace('#project/', ''));
+      if (!p) return;
+      var cap = $('.strip-cap', a);
+      if (!cap) { cap = document.createElement('span'); cap.className = 'strip-cap'; a.appendChild(cap); }
+      cap.innerHTML = '<span class="strip-title">' + esc(p.title) + '</span><span class="strip-plat">' + esc(p.platforms.join(', ')) + '</span>';
+    });
+  }
+
+  /* ---------- carousel (hero strip) ---------- */
+  var AUTO_MS = 10000;
+  function initCarousel() {
+    var box = $('#carousel'), strip = $('#strip');
+    var timer = null, hovering = false;
+    var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    var SETS = 5, HOME_SET = 2; // 5 copies of the strip, the real one in the middle
+    var origCount = $$('a', strip).length;
+    var period = 0, anchor = 0, settle = null;
+
+    // Build SETS copies of the cards: clones before and after the real ones.
+    (function () {
+      var real = $$('a', strip).filter(function (a) { return !a.hasAttribute('aria-hidden'); });
+      var frag = document.createDocumentFragment();
+      for (var s = 0; s < SETS; s++) real.forEach(function (a) {
+        if (s === HOME_SET) frag.appendChild(a);
+        else { var c = a.cloneNode(true); c.setAttribute('aria-hidden', 'true'); c.setAttribute('tabindex', '-1'); frag.appendChild(c); }
+      });
+      strip.innerHTML = ''; strip.appendChild(frag);
+    })();
+
+    function cards() { return $$('a', strip); }
+    function home() { return period * HOME_SET - anchor; }
+    function measure() {
+      var list = cards();
+      period = list[origCount].offsetLeft - list[0].offsetLeft;
+      anchor = $('.hero .wrap').getBoundingClientRect().left; // first card lines up with the page column
+    }
+    function recentre() {
+      var h = home(), x = strip.scrollLeft;
+      if (x > h + period / 2) strip.scrollLeft = x - period;
+      else if (x < h - period / 2) strip.scrollLeft = x + period;
+    }
+    function goTo(x) { strip.scrollTo({ left: x, behavior: reduce ? 'auto' : 'smooth' }); }
+    function step(dir) {
+      var list = cards(), cur = strip.scrollLeft, i;
+      if (dir > 0) {
+        for (i = 0; i < list.length; i++) if (list[i].offsetLeft - anchor > cur + 4) break;
+        goTo(list[Math.min(i, list.length - 1)].offsetLeft - anchor);
+      } else {
+        for (i = list.length - 1; i >= 0; i--) if (list[i].offsetLeft - anchor < cur - 4) break;
+        goTo(list[Math.max(i, 0)].offsetLeft - anchor);
+      }
+    }
+    // After any scroll settles, silently jump by one period so the strip never runs out of copies.
+    strip.addEventListener('scroll', function () { clearTimeout(settle); settle = setTimeout(recentre, 140); }, { passive: true });
+    window.addEventListener('resize', function () { measure(); strip.scrollLeft = home(); });
+    measure(); strip.scrollLeft = home();
+    function restart() {
+      clearInterval(timer);
+      if (reduce || hovering) return;
+      timer = setInterval(function () { if (!document.hidden) step(1); }, AUTO_MS);
+    }
+
+    $('.car-prev', box).addEventListener('click', function () { step(-1); restart(); });
+    $('.car-next', box).addEventListener('click', function () { step(1); restart(); });
+    box.addEventListener('mouseenter', function () { hovering = true; restart(); });
+    box.addEventListener('mouseleave', function () { hovering = false; restart(); });
+    strip.addEventListener('touchstart', restart, { passive: true });
+    strip.addEventListener('keydown', restart);
+    // Shift + wheel already scrolls sideways natively; Ctrl + wheel is mapped to it here.
+    var wheelLock = 0;
+    strip.addEventListener('wheel', function (e) {
+      if (!e.ctrlKey) return;
+      e.preventDefault();
+      var d = e.deltaY || e.deltaX, now = Date.now();
+      if (!d || now - wheelLock < 450) return;
+      wheelLock = now;
+      step(d > 0 ? 1 : -1); restart();
+    }, { passive: false });
+    restart();
+  }
+
+  function initTileVideos() {
+    var tiles = $('#tiles');
+    function start(tile) {
+      if ($('.tile-video', tile)) return;
+      var p = findProject(tile.getAttribute('href').replace('#project/', ''));
+      if (!p || !p.video) return;
+      var v = document.createElement('video');
+      v.className = 'tile-video';
+      v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
+      v.style.objectPosition = p.focal || '50% 50%';
+      v.src = p.video;
+      v.addEventListener('playing', function () { v.classList.add('is-playing'); });
+      tile.insertBefore(v, $('img', tile).nextSibling);
+      var pr = v.play(); if (pr && pr.catch) pr.catch(function () {});
+    }
+    function stop(tile) {
+      var v = $('.tile-video', tile);
+      if (!v) return;
+      v.pause(); v.removeAttribute('src'); v.load(); v.remove(); // stop, not pause: next hover starts from 0:00
+    }
+    tiles.addEventListener('pointerover', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      var t = e.target.closest('.tile');
+      if (t && !t.contains(e.relatedTarget)) start(t);
+    });
+    tiles.addEventListener('pointerout', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      var t = e.target.closest('.tile');
+      if (t && !t.contains(e.relatedTarget)) stop(t);
+    });
+  }
+
   function renderTiles() {
     $('#tiles').innerHTML = D.projects.map(function (p) {
       var c = p[lang];
@@ -189,6 +305,7 @@
   /* ---------- boot ---------- */
   function renderAll() {
     applyStatic();
+    renderStripCaps();
     renderTiles();
     renderSkills();
     renderJobs();
@@ -200,6 +317,8 @@
     $$('[data-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.getAttribute('data-lang')); }); });
     initTheme();
     initDialog();
+    initCarousel();
+    initTileVideos();
     renderAll();
     syncFromHash();
   }
